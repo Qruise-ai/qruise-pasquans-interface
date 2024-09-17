@@ -10,7 +10,11 @@ def simulate(
     backend: str = "Bull", 
     backend_options: dict = None, 
 ) -> dict:
-    """    
+    """
+    Function to run a simulation on a specified backend
+    
+    Parameters
+    ----------    
     lattice_sites : List[Tuple[float]] 
         List of atom positions 
     global_rabi_frequency : List[float] 
