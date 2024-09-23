@@ -7,6 +7,8 @@ class MockSimulator(SimulatorBackend):
         Constructor for the MockSimulator class.
         """
         self._backend_options = backend_options
+        # Pop the provider key from the backend options
+        self._backend_options.pop("provider", None)
         self.name = "mock_simulator"
 
     def simulate(self,
