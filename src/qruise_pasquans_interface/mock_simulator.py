@@ -8,7 +8,7 @@ class MockSimulator(SimulatorBackend):
         """
         self._backend_options = backend_options
         # Pop the provider key from the backend options
-        self._backend_options.pop("provider", None)
+        _ = self._backend_options.pop("provider", None)
         self.name = "mock_simulator"
 
     def simulate(self,
@@ -17,13 +17,14 @@ class MockSimulator(SimulatorBackend):
                     global_phase,
                     global_detuning,
                     local_detuning,
-                    init_state=None) -> dict:
+                    init_state=None,
+                    backend_options={},) -> dict:
         """
         Function to run a simulation on a specified backend
         """
         return {
             "state_populations": [0.5, 0.5],
-            "backend_configuration": self._backend_options,
+            "backend_options": backend_options,
         }
     
     def get_backend_information(self) -> dict:

@@ -1,4 +1,5 @@
 from typing import Tuple
+from qruise_pasquans_interface.provider import PasquansProvider
 
 def simulate( 
     lattice_sites: list[Tuple[float]], 
@@ -46,9 +47,20 @@ def simulate(
     """
 
     # Create the backend object
-
+    backend_simulator = PasquansProvider().get_backend(backend)
     # Run the simulation
-
-    # Return the simulation results
-
-    return {"something": None}
+    try:
+        result = backend_simulator.simulate(
+            lattice_sites=lattice_sites,
+            global_rabi_frequency=global_rabi_frequency,
+            global_phase=global_phase,
+            global_detuning=global_detuning,
+            local_detuning=local_detuning,
+            init_state=init_state,
+            backend_options=backend_options,
+        )
+    except Exception as e:
+        result["error"] = str(e)
+    finally:
+        result["backend_information"] = backend_simulator.get_backend_information()
+    return result
