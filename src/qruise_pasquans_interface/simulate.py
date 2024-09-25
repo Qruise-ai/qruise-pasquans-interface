@@ -10,6 +10,7 @@ def simulate(
     init_state: list[float] = None, 
     backend: str = "Bull", 
     backend_options: dict = None, 
+    timegrid: list[float] = None,
 ) -> dict:
     """
     Function to run a simulation on a specified backend
@@ -48,6 +49,7 @@ def simulate(
 
     # Create the backend object
     backend_simulator = PasquansProvider().get_backend(backend)
+    result = {}
     # Run the simulation
     try:
         result = backend_simulator.simulate(
@@ -58,6 +60,7 @@ def simulate(
             local_detuning=local_detuning,
             init_state=init_state,
             backend_options=backend_options,
+            timegrid=timegrid,
         )
     except Exception as e:
         result["error"] = str(e)

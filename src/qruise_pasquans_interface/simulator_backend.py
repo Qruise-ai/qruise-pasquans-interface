@@ -21,6 +21,7 @@ class SimulatorBackend(ABC):
     global_detuning: list[float], 
     local_detuning: list[float], 
     init_state: list[float] = None,
+    timegrid: list[float] = None,
     ) -> dict:
         """
         Run simulation

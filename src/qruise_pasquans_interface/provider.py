@@ -1,6 +1,5 @@
-from .mock_simulator import MockSimulator
+from qruise_pasquans_interface import SIMULATORS
 
-SIMULATORS = [MockSimulator]
 
 class PasquansProvider:
     """Provider for Pasquans backends

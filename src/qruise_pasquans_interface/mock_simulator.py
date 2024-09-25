@@ -18,6 +18,7 @@ class MockSimulator(SimulatorBackend):
                     global_detuning,
                     local_detuning,
                     init_state=None,
+                    timegrid=None,
                     backend_options={},) -> dict:
         """
         Function to run a simulation on a specified backend
