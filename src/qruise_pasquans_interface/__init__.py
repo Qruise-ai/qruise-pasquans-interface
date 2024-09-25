@@ -23,7 +23,10 @@ finally:
 try:
     from qruise_pasquans_interface.mock_simulator import MockSimulator
 except ImportError:
-    warnings.warn("MockSimulator not available. Please install qruise-pasquans-interface.", ImportWarning)
+    warnings.warn(
+        "MockSimulator not available. Please install qruise-pasquans-interface.",
+        ImportWarning,
+    )
 else:
     SIMULATORS.append(MockSimulator)
 
@@ -31,7 +34,8 @@ else:
 try:
     from qruise_pasquans.qruise_simulator import QruiseSimulator
 except ImportError:
-    warnings.warn("QruiseSimulator not available. Please install qruise-pasquans.", ImportWarning)
+    warnings.warn(
+        "QruiseSimulator not available. Please install qruise-pasquans.", ImportWarning
+    )
 else:
     SIMULATORS.append(QruiseSimulator)
-    

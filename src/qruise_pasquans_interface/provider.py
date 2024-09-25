@@ -2,8 +2,7 @@ from qruise_pasquans_interface import SIMULATORS
 
 
 class PasquansProvider:
-    """Provider for Pasquans backends
-    """
+    """Provider for Pasquans backends"""
 
     def __init__(self):
         super().__init__()
@@ -81,6 +80,7 @@ class PasquansProvider:
             )
 
         return backend_instance
+
     def get_backend(self, name=None, **kwargs):
         """Return a single backend matching the specified filtering.
 

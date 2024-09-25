@@ -1,5 +1,6 @@
 from qruise_pasquans_interface.simulate import simulate
 
+
 def test_simulate():
     result = simulate(
         lattice_sites=[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)],
