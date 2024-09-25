@@ -21,7 +21,7 @@ class MockSimulator(SimulatorBackend):
                     timegrid=None,
                     backend_options={},) -> dict:
         """
-        Function to run a simulation on a specified backend
+        Simulate the system.
         """
         return {
             "state_populations": [0.5, 0.5],
