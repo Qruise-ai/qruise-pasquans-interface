@@ -21,7 +21,7 @@ finally:
 
 # Mock simulator
 try:
-    from qruise.pasquans.interface.mock_simulator import MockSimulator
+    from qruise.pasquans_interface.mock_simulator import MockSimulator
 except ImportError:
     warnings.warn(
         "MockSimulator not available. Please install qruise-pasquans-interface.",

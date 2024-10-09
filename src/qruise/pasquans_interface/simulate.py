@@ -1,5 +1,5 @@
 from typing import Tuple
-from qruise.pasquans.interface.provider import PasquansProvider
+from qruise.pasquans_interface.provider import PasquansProvider
 
 
 def simulate(
