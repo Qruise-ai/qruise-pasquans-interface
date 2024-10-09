@@ -1,5 +1,5 @@
 import pytest
-from qruise_pasquans_interface.provider import PasquansProvider
+from qruise.pasquans.interface.provider import PasquansProvider
 
 
 @pytest.fixture

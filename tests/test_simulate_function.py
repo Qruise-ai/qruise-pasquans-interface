@@ -1,4 +1,4 @@
-from qruise_pasquans_interface.simulate import simulate
+from qruise.pasquans.interface.simulate import simulate
 
 
 def test_simulate():

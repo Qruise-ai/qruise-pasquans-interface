@@ -1,4 +1,4 @@
-from qruise_pasquans_interface.mock_simulator import MockSimulator
+from qruise.pasquans.interface.mock_simulator import MockSimulator
 
 
 def test_mock_simulator(mock_simulator):

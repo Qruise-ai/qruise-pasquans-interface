@@ -1,4 +1,4 @@
-from qruise_pasquans_interface import SIMULATORS
+from qruise.pasquans.interface import SIMULATORS
 
 
 class PasquansProvider:
