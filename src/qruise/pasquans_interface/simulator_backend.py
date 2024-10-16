@@ -7,7 +7,7 @@ class SimulatorBackend(ABC):
     name: str
 
     @abstractmethod
-    def __init__(self, **backend_options):
+    def __init__(self, provider, **backend_options):
         """
         Abstract constructor.
         Subclasses must implement this to initialize backend-specific attributes.

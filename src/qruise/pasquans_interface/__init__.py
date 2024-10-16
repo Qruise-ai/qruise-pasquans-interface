@@ -1,5 +1,4 @@
 import sys
-import warnings
 
 SIMULATORS = []
 
@@ -18,24 +17,3 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
-
-# Mock simulator
-try:
-    from qruise.pasquans_interface.mock_simulator import MockSimulator
-except ImportError:
-    warnings.warn(
-        "MockSimulator not available. Please install qruise-pasquans-interface.",
-        ImportWarning,
-    )
-else:
-    SIMULATORS.append(MockSimulator)
-
-# Qruise simulator
-try:
-    from qruise.pasquans.qruise_simulator import QruiseSimulator
-except ImportError:
-    warnings.warn(
-        "QruiseSimulator not available. Please install qruise-pasquans.", ImportWarning
-    )
-else:
-    SIMULATORS.append(QruiseSimulator)

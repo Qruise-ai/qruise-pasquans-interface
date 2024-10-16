@@ -3,13 +3,12 @@ from .simulator_backend import SimulatorBackend
 
 class MockSimulator(SimulatorBackend):
 
-    def __init__(self, **backend_options):
+    def __init__(self, provider, **backend_options):
         """
         Constructor for the MockSimulator class.
         """
         self._backend_options = backend_options
-        # Pop the provider key from the backend options
-        _ = self._backend_options.pop("provider", None)
+        self.provider = provider
         self.name = "mock_simulator"
 
     def simulate(

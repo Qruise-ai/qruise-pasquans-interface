@@ -1,7 +1,7 @@
-from qruise.pasquans_interface import SIMULATORS
+from abc import ABC, abstractmethod
 
 
-class PasquansProvider:
+class PasquansProvider(ABC):
     """Provider for Pasquans backends"""
 
     def __init__(self):
@@ -10,15 +10,18 @@ class PasquansProvider:
         self.name = "pasquans_qruise_provider"
         self._backends = self._verify_backends()
 
-    def backends(self, name=None, filters=None, **kwargs):
+    @abstractmethod
+    def _get_simulators(self) -> list:
+        """Return a list of simulator classes"""
+        raise NotImplementedError("Method not implemented")
+
+    def backends(self, name=None):
         """Return a list of backends matching the name
 
         Parameters
         ----------
         name : str, optional
             name of the backend, by default None
-        filters : callable, optional
-            Filtering conditions, as callable, by default None
 
         Returns
         -------
@@ -46,7 +49,7 @@ class PasquansProvider:
         """
 
         ret = {}
-        for backend_cls in SIMULATORS:
+        for backend_cls in self._get_simulators():
             backend_instance = self._get_backend_instance(backend_cls)
             backend_name = backend_instance.name
             ret[backend_name] = backend_instance

@@ -9,6 +9,7 @@ def test_simulate():
         global_detuning=[0.0, 0.0],
         local_detuning=[0.0, 0.0],
         init_state=[0.0, 0.0],
+        timegrid=[0.0, 1.0],
         backend="mock_simulator",
         backend_options={},
     )
