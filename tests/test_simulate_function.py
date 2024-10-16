@@ -1,4 +1,5 @@
 from qruise.pasquans_interface.simulate import simulate
+from qruise.pasquans_interface.mock_provider import MockProvider
 
 
 def test_simulate():
@@ -12,6 +13,7 @@ def test_simulate():
         timegrid=[0.0, 1.0],
         backend="mock_simulator",
         backend_options={},
+        provider=MockProvider(),
     )
     assert result["state_populations"] == [0.5, 0.5]
     assert result["backend_options"] == {}

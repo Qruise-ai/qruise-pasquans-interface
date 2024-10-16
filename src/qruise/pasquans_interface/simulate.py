@@ -1,5 +1,7 @@
 from typing import Tuple
 from qruise.pasquans_interface.provider import PasquansProvider
+from qruise.pasquans_interface.mock_provider import MockProvider
+from qruise.pasquans_interface.simulator_backend import SimulatorBackend
 
 
 def simulate(
@@ -12,6 +14,7 @@ def simulate(
     backend: str = "Bull",
     backend_options: dict = None,
     timegrid: list[float] = None,
+    provider: PasquansProvider = MockProvider(),
 ) -> dict:
     """
     Function to run a simulation on a specified backend
@@ -50,7 +53,7 @@ def simulate(
     """
 
     # Create the backend object
-    backend_simulator = PasquansProvider().get_backend(backend)
+    backend_simulator: SimulatorBackend = provider.get_backend(backend)
     result = {}
     # Run the simulation
     try:
