@@ -1,10 +1,7 @@
-"""
-    Dummy conftest.py for qruise_pasquans_interface.
+import pytest
+from qruise.pasquans_interface.mock_provider import MockProvider
 
-    If you don't know what this is for, just leave it empty.
-    Read more about conftest.py under:
-    - https://docs.pytest.org/en/stable/fixture.html
-    - https://docs.pytest.org/en/stable/writing_plugins.html
-"""
 
-# import pytest
+@pytest.fixture
+def mock_simulator():
+    return MockProvider().get_backend("mock_simulator")
