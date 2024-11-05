@@ -2,31 +2,64 @@ from abc import ABC, abstractmethod
 
 
 class PasquansProvider(ABC):
-    """Provider for Pasquans backends"""
+    """Abstract Base Class (ABC) for providing access to Pasquans backends.
+
+    This class represents a provider for various Pasquans backends (e.g., simulators).
+    It serves as a blueprint for child classes to implement methods for retrieving
+    and managing backend instances.
+
+    Attributes:
+    -----------
+    name : str
+        The name of the provider instance, initialized as 'pasquans_qruise_provider'.
+    _backends : dict
+        A dictionary storing backend instances keyed by backend names.
+    """
 
     def __init__(self):
+        """Initialize the provider and verify the available backends."""
         super().__init__()
-
         self.name = "pasquans_qruise_provider"
         self._backends = self._verify_backends()
 
     @abstractmethod
     def _get_simulators(self) -> list:
-        """Return a list of simulator classes"""
+        """Abstract method to be implemented by child classes to return a list of simulator classes.
+
+        This method should return a list of simulator classes that represent different backends.
+
+        Returns
+        -------
+        list
+            A list of classes representing simulators.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in the subclass.
+        """
         raise NotImplementedError("Method not implemented")
 
     def backends(self, name=None):
-        """Return a list of backends matching the name
+        """Return a list of backends, optionally filtered by name.
+
+        This method returns all available backends managed by the provider. If a specific
+        backend name is provided, it returns the backend matching that name.
 
         Parameters
         ----------
         name : str, optional
-            name of the backend, by default None
+            The name of the backend to filter for. If None, all backends are returned.
 
         Returns
         -------
         list[SimulatorBackend]
-            A list of backend instances matching the condition
+            A list of backend instances matching the specified name, or all backends if no name is provided.
+
+        Raises
+        ------
+        ValueError
+            If the specified backend name is not found.
         """
         backends = list(self._backends.values())
         if name:
@@ -36,18 +69,19 @@ class PasquansProvider(ABC):
                 raise ValueError(
                     "The '{}' backend is not installed in your system.".format(name)
                 )
-
         return backends
 
     def _verify_backends(self):
-        """Return instantiated Backends
+        """Instantiate and verify available backends.
+
+        This method iterates over the list of backend classes provided by the
+        `_get_simulators()` method, instantiates each backend, and stores them in a dictionary.
 
         Returns
         -------
-        dict[str:BackendV1]
-            A dict of the instantiated backends keyed by backend name
+        dict[str, BackendV1]
+            A dictionary of instantiated backend objects, keyed by their names.
         """
-
         ret = {}
         for backend_cls in self._get_simulators():
             backend_instance = self._get_backend_instance(backend_cls)
@@ -56,55 +90,61 @@ class PasquansProvider(ABC):
         return ret
 
     def _get_backend_instance(self, backend_cls):
-        """Return an instance of a backend from its class
+        """Instantiate a backend from its class.
+
+        This method attempts to create an instance of the backend class passed in as a parameter.
+        If instantiation fails, an ImportError is raised.
 
         Parameters
         ----------
         backend_cls : class
-            backend class
+            The class representing a backend.
 
         Returns
         -------
         BackendV1
-            an instance of the backend
+            An instance of the backend class.
 
         Raises
         ------
-        QiskitError
-            if the backend can not be instantiated
+        ImportError
+            If the backend class cannot be instantiated for any reason.
         """
-
-        # Verify that the backend can be instantiated.
         try:
             backend_instance = backend_cls(provider=self)
         except Exception as err:
             raise ImportError(
                 "Backend %s could not be instantiated: %s" % (backend_cls, err)
             )
-
         return backend_instance
 
     def get_backend(self, name=None, **kwargs):
-        """Return a single backend matching the specified filtering.
+        """Retrieve a single backend instance matching the specified filtering criteria.
 
-        Parameters:
-        -----------
-            name (str): name of the backend.
-            **kwargs: dict used for filtering.
+        This method filters the available backends using the provided `name` and additional
+        keyword arguments, and returns a single matching backend. If multiple backends match the
+        filtering criteria, or if none match, a ValueError is raised.
 
-        Returns:
-        --------
-            Backend: a backend matching the filtering.
+        Parameters
+        ----------
+        name : str, optional
+            The name of the backend to retrieve. If None, all backends are considered.
+        **kwargs : dict
+            Additional keyword arguments used for filtering the backends.
 
-        Raises:
+        Returns
         -------
-            ValueError: if no backend could be found or
-                more than one backend matches the filtering criteria.
+        BackendV1
+            The backend instance that matches the filtering criteria.
+
+        Raises
+        ------
+        ValueError
+            If no backends match the filtering criteria or more than one backend matches.
         """
         backends = self.backends(name, **kwargs)
         if len(backends) > 1:
             raise ValueError("More than one backend matches the criteria")
         if not backends:
             raise ValueError("No backend matches the criteria")
-
         return backends[0]

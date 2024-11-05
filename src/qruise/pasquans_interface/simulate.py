@@ -17,44 +17,56 @@ def simulate(
     provider: PasquansProvider = MockProvider(),
 ) -> dict:
     """
-    Function to run a simulation on a specified backend
+    Function to run a quantum simulation on a specified backend.
+
+    This function takes in a variety of parameters describing a quantum system (such as lattice sites,
+    rabi frequencies, phase, and detuning) and runs a simulation on the specified backend. The results
+    of the simulation, along with backend-specific configuration information, are returned in a dictionary.
+    If an error occurs during simulation, it is caught and included in the results.
 
     Parameters
     ----------
-    lattice_sites : List[Tuple[float]]
-        List of atom positions
-    global_rabi_frequency : List[float]
-        Vector of floats describing the time-dependent global rabi frequency
-    global_phase : List[float]
-        Vector of floats describing the time-dependent global phase profile
-    global_detuning : List[float]
-        Vector of floats describing the time-dependent global detuning
-    local_detuning : List[float]
-        Vector of floats describing the local detuning
-        (in the order of the sites specified in the lattice sites)
-    init_state : List[float], optional
-        Vector of floats describing the initial state of the system, by default ground state
+    lattice_sites : list[Tuple[float]]
+        A list of tuples representing the positions of atoms in the lattice.
+    global_rabi_frequency : list[float]
+        A time-dependent list of global rabi frequencies used for the simulation.
+    global_phase : list[float]
+        A time-dependent list of global phase values.
+    global_detuning : list[float]
+        A time-dependent list of global detuning values.
+    local_detuning : list[float]]
+        A list representing the local detuning for each site specified in the lattice.
+    init_state : list[float], optional
+        An optional list representing the initial state of the system, default is None.
     backend : str, optional
-        name of the digital twin backend to be used, by default “Bull”
+        The name of the backend to use for simulation, default is "Bull".
     backend_options : dict, optional
-        key-value pair of backend-specific configuration params, by default None
+        A dictionary of key-value pairs for backend-specific configurations, default is None.
+    timegrid : list[float], optional
+        A time grid list for the simulation, default is None.
+    provider : PasquansProvider, optional
+        The provider responsible for managing and retrieving backends, default is MockProvider.
 
     Returns
     -------
-    Dict
-        Dictionary containing the simulation results as state populations. Additionally, it also contains the backend configuration metadata.
+    dict
+        A dictionary containing the results of the simulation, including:
+        - "state_populations": A mock or actual state population result from the simulation.
+        - "backend_information": Metadata about the backend used in the simulation.
+        - "error": Error information, if any exception occurs during the simulation.
 
     Raises
     ------
     SimulationError
-        run-time error encountered during the simulation
+        Raised if a run-time error is encountered during the simulation.
     JobDescriptionError
-        invalid or incompatible simulation job description
+        Raised if the job description provided to the simulation is invalid or incompatible.
     """
 
-    # Create the backend object
+    # Retrieve the backend object using the specified provider and backend name
     backend_simulator: SimulatorBackend = provider.get_backend(backend)
     result = {}
+
     # Run the simulation
     try:
         result = backend_simulator.simulate(
@@ -68,7 +80,11 @@ def simulate(
             timegrid=timegrid,
         )
     except Exception as e:
+        # Catch any exception that occurs during simulation and add it to the result
         result["error"] = str(e)
     finally:
+        # Retrieve and include backend information in the result
         result["backend_information"] = backend_simulator.get_backend_information()
+
+    # Return the result, including simulation data and backend information
     return result
