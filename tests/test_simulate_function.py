@@ -18,8 +18,3 @@ def test_simulate():
     assert result["state_populations"] == [0.5, 0.5]
     assert result["backend_options"] == {}
     assert "error" not in result
-
-    populations = result["state_populations"]
-    assert "error" not in result
-
-    print(populations)
