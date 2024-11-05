@@ -5,7 +5,7 @@ The **qruise-pasquans-interface** package is a flexible and extensible API desig
 ## Features
 
 - **Abstract Backend Management**: Provides a base structure for implementing multiple backend simulators, ensuring a consistent API for different simulators.
-- **Mock Simulator Support**: Includes mock backends for testing and development, allowing users to mimic quantum operations in a controlled environment.
+- **Mock Simulator Support**: Includes a mock backend for testing and development, allowing users to mimic quantum operations in a controlled environment.
 - **Customizable Quantum Simulations**: Enables the customization of quantum operations, such as defining lattice sites, Rabi frequencies, phases, detunings, and initial states.
 - **Integration with Pasquans Platforms**: Built to support PASQUANS2.1 simulators with minimal modifications, making it easy to integrate with existing Pasquans platforms.
 
@@ -49,11 +49,14 @@ assert "error" not in result
 print("Simulation Results:", populations)
 ```
 
+
+
 ## How to use the Interface
 The `qruise-pasquans-interface` package provides a simple API for simulating quantum operations. To use the interface, follow these steps:
 - **Import the `simulate` function**: Import the `simulate` function from the package to run quantum simulations.
 - **Define the simulation parameters**: Define the parameters for the quantum simulation, such as lattice sites, Rabi frequencies, phases, detunings, initial states, and time grid.
-- **Select the backend simulator**: Choose the backend simulator to use for the simulation, such as the mock simulator or a real simulator.
+- **Select the provider**: Choose the provider that manages the backend simulators, such as the mock provider or a custom provider.
+- **Select the backend simulator**: Choose the backend simulator to use for the simulation, such as the mock simulator or a custom simulator.
 - **Run the simulation**: Call the `simulate` function with the specified parameters to run the quantum simulation.
 - **Access the simulation results**: Retrieve the simulation results, such as state populations, from the returned result dictionary.
 
