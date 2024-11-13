@@ -1,5 +1,5 @@
-from qruise.pasquans_interface.simulate import simulate
-from qruise.pasquans_interface.mock_provider import MockProvider
+from qruise.pasquans_interface import simulate
+from qruise.pasquans_interface import MockProvider
 
 
 def test_simulate():
