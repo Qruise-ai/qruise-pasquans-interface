@@ -28,7 +28,7 @@ pytest
 The following example demonstrates how to run a basic simulation using the mock simulator provided in the package.
 
 ```python
-from qruise_pasquans_interface import simulate, MockProvider
+from qruise.pasquans_interface import simulate, MockProvider
 
 result = simulate(
     lattice_sites=[(0.0, 0.0), (1.0, 1.0)],
@@ -68,7 +68,7 @@ A simulator in the qruise-pasquans-interface must inherit from the SimulatorBack
 
 **Step-by-step**:
 ```python
-from qruise_pasquans_interface import SimulatorBackend
+from qruise.pasquans_interface import SimulatorBackend
 from typing import List, Tuple
 
 class CustomSimulator(SimulatorBackend):
@@ -156,7 +156,7 @@ A provider in the qruise-pasquans-interface must inherit from the PasquansProvid
 
 **Step-by-step**:
 ```python
-from qruise_pasquans_interface import PasquansProvider
+from qruise.pasquans_interface import PasquansProvider
 from typing import List
 
 class CustomProvider(PasquansProvider):
@@ -179,7 +179,7 @@ class CustomProvider(PasquansProvider):
 After defining CustomSimulator and CustomProvider, you can use them in your simulation code.
 
 ```python
-from qruise_pasquans_interface import simulate
+from qruise.pasquans_interface import simulate
 
 # Example usage with the CustomProvider and CustomSimulator
 result = simulate(

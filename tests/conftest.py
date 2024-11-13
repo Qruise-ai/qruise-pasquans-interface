@@ -1,5 +1,5 @@
 import pytest
-from qruise.pasquans_interface.mock_provider import MockProvider
+from qruise.pasquans_interface import MockProvider
 
 
 @pytest.fixture
