@@ -5,6 +5,7 @@ from qruise.pasquans_interface.mock_provider import MockProvider
 from qruise.pasquans_interface.provider import PasquansProvider
 from qruise.pasquans_interface.simulator_backend import SimulatorBackend
 from qruise.pasquans_interface.simulate import simulate
+import pint
 
 __all__ = [
     "MockSimulator",
@@ -13,6 +14,9 @@ __all__ = [
     "SimulatorBackend",
     "simulate",
 ]
+
+ureg = pint.UnitRegistry()
+Q_ = ureg.Quantity
 
 if sys.version_info[:2] >= (3, 8):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
