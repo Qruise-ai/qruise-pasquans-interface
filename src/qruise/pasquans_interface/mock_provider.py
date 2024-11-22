@@ -1,5 +1,5 @@
 from qruise.pasquans_interface.provider import PasquansProvider
-from qruise.pasquans_interface.mock_simulator import MockSimulator
+from qruise.pasquans_interface.mock_simulator import MockSimulator, MockSimulatorV2
 from qruise.pasquans_interface.simulator_backend import SimulatorBackend
 
 
@@ -25,4 +25,4 @@ class MockProvider(PasquansProvider):
         list[SimulatorBackend]
             A list of available simulators, in this case, containing only the MockSimulator class.
         """
-        return [MockSimulator]
+        return [MockSimulator, MockSimulatorV2]
