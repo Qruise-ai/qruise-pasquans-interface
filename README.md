@@ -69,7 +69,6 @@ To create a custom provider and simulator in the qruise-pasquans-interface, youâ
 ### Custom Simulator Backend
 A simulator in the qruise-pasquans-interface must inherit from the SimulatorBackend abstract base class and implement the required methods, such as simulate and get_backend_information.
 
-**Step-by-step**:
 ```python
 from qruise.pasquans_interface import SimulatorBackend
 from qruise.pasquans_interface import ureg
@@ -143,7 +142,7 @@ class CustomSimulator(SimulatorBackend):
             - "populations": List of state populations over time.
             - "backend_options": The backend options used in the simulation.
         """
-                # Check if the lattice sites are in a distance unit
+        # Check if the lattice sites are in a distance unit
         assert lattice_sites.dimensionality == ureg.meter.dimensionality
         # Check if the global rabi frequency is in a frequency unit
         assert global_rabi_frequency.dimensionality == ureg.hertz.dimensionality
@@ -188,15 +187,14 @@ class CustomSimulator(SimulatorBackend):
 Explanation of CustomSimulator:
 - Initialization: The constructor method initializes the custom simulator with options provided in backend_options. You can add custom configuration options here as needed.
 - simulate: The simulate method implements the main logic for running a quantum simulation. It takes in various parameters, such as lattice sites, Rabi frequencies, and detunings, as Pint Quantity objects with associated units. You can:
- - Validate: Check if the provided parameters have the correct dimensionality (e.g., [length] for lattice sites, [frequency] for Rabi frequencies).
- - Convert: Convert the parameters to the units expected by the simulator backend if they differ (e.g., converting micrometers to meters or MHz to Hz).
- - Simulate: Perform the actual simulation logic. In this example, the method returns a mock result (state_populations) for demonstration. In a real implementation, this is where the quantum system's behavior would be computed based on the inputs and any backend-specific constraints.
+  - Validate: Check if the provided parameters have the correct dimensionality (e.g., [length] for lattice sites, [frequency] for Rabi frequencies).
+  - Convert: Convert the parameters to the units expected by the simulator backend if they differ (e.g., converting micrometers to meters or MHz to Hz).
+  - Simulate: Perform the actual simulation logic. In this example, the method returns a mock result (state_populations) for demonstration. In a real implementation, this is where the quantum system's behavior would be computed based on the inputs and any backend-specific constraints.
 - get_backend_information: Returns metadata about the backend, which can be useful for debugging and configuration checks.
 
 ### Custom Provider
 A provider in the qruise-pasquans-interface must inherit from the PasquansProvider abstract base class and implement the _get_simulators method, which returns a list of available simulator classes.
 
-**Step-by-step**:
 ```python
 from qruise.pasquans_interface import PasquansProvider
 from typing import List
