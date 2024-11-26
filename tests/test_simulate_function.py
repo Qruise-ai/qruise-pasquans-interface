@@ -30,7 +30,7 @@ def test_simulate_v2():
         global_detuning=np.array([0.0, 0.0]) * Q_("MHz"),
         local_detuning=np.array([0.0, 0.0]) * Q_("MHz"),
         init_state=[0.0, 0.0],
-        timegrid=[0.0, 1.0],
+        timegrid=[0.0, 1.0] * Q_("microsecond"),
         backend="mock_simulator_v2",
         backend_options={},
         provider=MockProvider(),
