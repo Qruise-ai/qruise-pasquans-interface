@@ -28,24 +28,27 @@ pytest
 The following example demonstrates how to run a basic simulation using the mock simulator provided in the package.
 
 ```python
-from qruise.pasquans_interface import simulate, MockProvider
+from qruise.pasquans_interface import simulate, MockProvider, Q_
+import numpy as np
 
 result = simulate(
-    lattice_sites=[(0.0, 0.0), (1.0, 1.0)],
-    global_rabi_frequency=[1.0, 1.0],
-    global_phase=[0.0, 0.0],
-    global_detuning=[0.0, 0.0],
-    local_detuning=[0.0, 0.0],
+    lattice_sites=np.array([(0.0, 0.0), (1.0, 1.0)]) * Q_("micrometer"),
+    global_rabi_frequency=np.array([1.0, 1.0]) * Q_("MHz"),
+    global_phase=np.array([0.0, 0.0]) * Q_("rad"),
+    global_detuning=np.array([0.0, 0.0]) * Q_("MHz"),
+    local_detuning=np.array([0.0, 0.0]) * Q_("MHz"),
     init_state=[1.0, 0.0],
-    timegrid=[0.0, 1.0],
-    backend="mock_simulator",
+    timegrid=np.array([0.0, 1.0]) * Q_("microsecond"),
+    backend="mock_simulator_v2",
     backend_options={},
     provider=MockProvider(),
 )
 
+assert "error" not in result
+
 # Accessing the simulation results
 populations = result["state_populations"]
-assert "error" not in result
+
 print("Simulation Results:", populations)
 ```
 
@@ -54,7 +57,7 @@ print("Simulation Results:", populations)
 ## How to use the Interface
 The `qruise-pasquans-interface` package provides a simple API for simulating quantum operations. To use the interface, follow these steps:
 - **Import the `simulate` function**: Import the `simulate` function from the package to run quantum simulations.
-- **Define the simulation parameters**: Define the parameters for the quantum simulation, such as lattice sites, Rabi frequencies, phases, detunings, initial states, and time grid.
+- **Define the simulation parameters**: Use Q_ and numpy array to define parameters such as lattice sites, Rabi frequencies, phases, detunings, initial states, and the time grid.
 - **Select the provider**: Choose the provider that manages the backend simulators, such as the mock provider or a custom provider.
 - **Select the backend simulator**: Choose the backend simulator to use for the simulation, such as the mock simulator or a custom simulator.
 - **Run the simulation**: Call the `simulate` function with the specified parameters to run the quantum simulation.
@@ -66,10 +69,10 @@ To create a custom provider and simulator in the qruise-pasquans-interface, youâ
 ### Custom Simulator Backend
 A simulator in the qruise-pasquans-interface must inherit from the SimulatorBackend abstract base class and implement the required methods, such as simulate and get_backend_information.
 
-**Step-by-step**:
 ```python
 from qruise.pasquans_interface import SimulatorBackend
-from typing import List, Tuple
+from qruise.pasquans_interface import ureg
+from pint import Quantity
 
 class CustomSimulator(SimulatorBackend):
     """Custom simulator backend"""
@@ -88,43 +91,78 @@ class CustomSimulator(SimulatorBackend):
         self.backend_options = backend_options
 
     def simulate(
-        self,
-        lattice_sites: List[Tuple[float, float]],
-        global_rabi_frequency: List[float],
-        global_phase: List[float],
-        global_detuning: List[float],
-        local_detuning: List[float],
-        timegrid: List[float],
-        init_state: List[float] = None,
-        backend_options: dict = None,
-    ) -> dict:
+            self,
+            lattice_sites: Quantity,
+            global_rabi_frequency: Quantity,
+            global_phase: Quantity,
+            global_detuning: Quantity,
+            local_detuning: Quantity,
+            init_state: list,
+            timegrid: Quantity,
+            backend_options={},
+        ) -> dict:
         """
-        Run a simulation on the custom backend.
+        Simulate the system.
+
+        This method simulates the dynamics of a quantum system based on input parameters
+        such as lattice configuration, Rabi frequencies, phases, and detuning values. It
+        returns a dictionary containing the simulation results and backend options used.
 
         Parameters
         ----------
-        lattice_sites : list[Tuple[float, float]]
-            List of positions of atoms in the lattice.
-        global_rabi_frequency : list[float]
-            Time-dependent global Rabi frequencies.
-        global_phase : list[float]
-            Time-dependent global phase values.
-        global_detuning : list[float]
-            Time-dependent global detuning values.
-        local_detuning : list[float]
-            Local detuning values for each lattice site.
-        timegrid : list[float]
-            Timeline for the simulation.
-        init_state : list[float], optional
-            Initial state of the quantum system, default is None.
+        lattice_sites : Quantity
+            A Pint Quantity representing the positions of atoms in the lattice. Expected to have
+            a unit of [length].
+        global_rabi_frequency : Quantity
+            A Pint Quantity representing the time-dependent global Rabi frequencies. Expected
+            to have a unit of [frequency].
+        global_phase : Quantity
+            A Pint Quantity representing the time-dependent global phases. Expected to have
+            a unit of [angle].
+        global_detuning : Quantity
+            A Pint Quantity representing the time-dependent global detuning values. Expected
+            to have a unit of [frequency].
+        local_detuning : Quantity
+            A Pint Quantity representing the local detuning values for each lattice site. Expected
+            to have a unit of [frequency].
+        init_state : list
+            A list representing the initial state of the system. Each element corresponds to the
+            state of a lattice site.
+        timegrid : Quantity
+            A Pint Quantity representing the time grid over which the simulation is run. Expected
+            to have a unit of [time].
         backend_options : dict, optional
-            Additional backend-specific configuration options.
+            A dictionary containing options specific to the simulation backend. Default is an
+            empty dictionary.
 
         Returns
         -------
         dict
-            Dictionary containing the results of the simulation, such as state populations and metadata.
+            A dictionary containing the following keys:
+            - "populations": List of state populations over time.
+            - "backend_options": The backend options used in the simulation.
         """
+        # Check if the lattice sites are in a distance unit
+        assert lattice_sites.dimensionality == ureg.meter.dimensionality
+        # Check if the global rabi frequency is in a frequency unit
+        assert global_rabi_frequency.dimensionality == ureg.hertz.dimensionality
+        # Check if the global phase is dimensionless
+        assert global_phase.dimensionless
+        # Check if the global detuning is in a frequency unit
+        assert global_detuning.dimensionality == ureg.hertz.dimensionality
+        # Check if the local detuning is in a frequency unit
+        assert local_detuning.dimensionality == ureg.hertz.dimensionality
+        # Check if the timegrid is in a time unit
+        assert timegrid.dimensionality == ureg.second.dimensionality
+
+        # Convert any units if your simulator requires it
+        lattice_sites = lattice_sites.to(ureg.meter)
+        global_rabi_frequency = global_rabi_frequency.to(ureg.hertz)
+        global_phase = global_phase.to(ureg.dimensionless)
+        global_detuning = global_detuning.to(ureg.hertz)
+        local_detuning = local_detuning.to(ureg.hertz)
+        timegrid = timegrid.to(ureg.second)
+
         # Example of running the simulation with mock data
         state_populations = [0.7, 0.3]  # Mock result for demonstration
         return {
@@ -148,13 +186,15 @@ class CustomSimulator(SimulatorBackend):
 ```
 Explanation of CustomSimulator:
 - Initialization: The constructor method initializes the custom simulator with options provided in backend_options. You can add custom configuration options here as needed.
-- simulate: Implements the main simulation logic. For demonstration purposes, this function returns a mock result (state_populations) and includes backend options. In a real implementation, you would add logic to perform the actual quantum simulation based on the provided parameters.
+- simulate: The simulate method implements the main logic for running a quantum simulation. It takes in various parameters, such as lattice sites, Rabi frequencies, and detunings, as Pint Quantity objects with associated units. You can:
+  - Validate: Check if the provided parameters have the correct dimensionality (e.g., [length] for lattice sites, [frequency] for Rabi frequencies).
+  - Convert: Convert the parameters to the units expected by the simulator backend if they differ (e.g., converting micrometers to meters or MHz to Hz).
+  - Simulate: Perform the actual simulation logic. In this example, the method returns a mock result (state_populations) for demonstration. In a real implementation, this is where the quantum system's behavior would be computed based on the inputs and any backend-specific constraints.
 - get_backend_information: Returns metadata about the backend, which can be useful for debugging and configuration checks.
 
 ### Custom Provider
 A provider in the qruise-pasquans-interface must inherit from the PasquansProvider abstract base class and implement the _get_simulators method, which returns a list of available simulator classes.
 
-**Step-by-step**:
 ```python
 from qruise.pasquans_interface import PasquansProvider
 from typing import List
@@ -183,15 +223,15 @@ from qruise.pasquans_interface import simulate
 
 # Example usage with the CustomProvider and CustomSimulator
 result = simulate(
-    lattice_sites=[(0.0, 0.0), (1.0, 1.0)],
-    global_rabi_frequency=[1.0, 1.0],
-    global_phase=[0.0, 0.0],
-    global_detuning=[0.0, 0.0],
-    local_detuning=[0.0, 0.0],
-    init_state=[1.0, 0.0],
-    timegrid=[0.0, 1.0],
+    lattice_sites=np.array([(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)]) * Q_("micrometer"),
+    global_rabi_frequency=np.array([1.0, 1.0]) * Q_("MHz"),
+    global_phase=np.array([0.0, 0.0]) * Q_("rad"),
+    global_detuning=np.array([0.0, 0.0]) * Q_("MHz"),
+    local_detuning=np.array([0.0, 0.0]) * Q_("MHz"),
+    init_state=[0.0, 0.0],
+    timegrid=[0.0, 1.0] * Q_("microsecond"),
     backend="custom_simulator",
-    backend_options={"custom_parameter": 2.0},
+    backend_options={},
     provider=CustomProvider(),
 )
 
